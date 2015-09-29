@@ -1678,7 +1678,7 @@ public final class RequestBuilderTest {
   @Test public void testPathPrefix() {
     @PathPrefix("/foo")
     class Example {
-      @GET("/bar/") //
+      @GET("/bar") //
       Call<ResponseBody> method() {
         return null;
       }
@@ -1686,7 +1686,22 @@ public final class RequestBuilderTest {
     Request request = buildRequest(Example.class);
     assertThat(request.method()).isEqualTo("GET");
     assertThat(request.headers().size()).isZero();
-    assertThat(request.urlString()).isEqualTo("http://example.com/foo/bar/");
+    assertThat(request.urlString()).isEqualTo("http://example.com/foo/bar");
+    assertThat(request.body()).isNull();
+  }
+
+  @Test public void testPathPrefix2() {
+    @PathPrefix("/foo")
+    class Example {
+      @GET("Bar") //
+      Call<ResponseBody> method() {
+        return null;
+      }
+    }
+    Request request = buildRequest(Example.class);
+    assertThat(request.method()).isEqualTo("GET");
+    assertThat(request.headers().size()).isZero();
+    assertThat(request.urlString()).isEqualTo("http://example.com/fooBar");
     assertThat(request.body()).isNull();
   }
 
