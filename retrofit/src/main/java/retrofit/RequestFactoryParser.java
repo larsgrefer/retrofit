@@ -414,7 +414,7 @@ final class RequestFactoryParser {
   private boolean validateQueryParams(String queryParams){
     int equals = queryParams.indexOf('=');
     if(queryParams.length() > 3 && equals != -1
-            && equals<queryParams.length() - 1 && equals > 0){
+            && equals < queryParams.length() - 1 && equals > 0){
       return true;
     }
     return false;
