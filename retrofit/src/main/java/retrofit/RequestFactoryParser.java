@@ -177,14 +177,12 @@ final class RequestFactoryParser {
     }
 
     // Get the relative URL path and existing query string, if present.
-    int question = combinedRelativeUrl.indexOf('?');
-    if (question != -1 && question < combinedRelativeUrl.length() - 1) {
-      // Ensure the query string does not have any named parameters.
-      String queryParams = combinedRelativeUrl.substring(question + 1);
+    String queryParams = combinedRelativeUrl.split("\\?")[1];
+    if(validateQueryParams(queryParams)){
       Matcher queryParamMatcher = PARAM_URL_REGEX.matcher(queryParams);
       if (queryParamMatcher.find()) {
         throw methodError(method, "URL query string \"%s\" must not have replace block. "
-            + "For dynamic query parameters use @Query.", queryParams);
+                + "For dynamic query parameters use @Query.", queryParams);
       }
     }
 
@@ -408,4 +406,18 @@ final class RequestFactoryParser {
     }
     return patterns;
   }
+
+  /**
+   * validates that query params are in the form of 'name=foo' and contains character '=',
+   * equals character must not be last or first character
+   */
+  private boolean validateQueryParams(String queryParams){
+    int equals = queryParams.indexOf('=');
+    if(queryParams.length() > 3 && equals != -1
+            && equals<queryParams.length() - 1 && equals > 0){
+      return true;
+    }
+    return false;
+  }
+
 }
